@@ -28,7 +28,7 @@ compileCommand=""
 if [[ "$*" == *-c* ]]; then
         compileCommand="echo Compiling server... && echo && mvn clean package"
 else
-        compileCommand=""
+        compileCommand="echo Skiping compilation..."
 fi
 
 

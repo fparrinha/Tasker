@@ -10,7 +10,7 @@ import { NO_CONNECTION_TO_SERVER_MSG, PostRequest } from '../../../core/Networki
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  @Input() errorMessage: string;
+  public errorMessage: string;
   private username: string;
   private password: string;
 

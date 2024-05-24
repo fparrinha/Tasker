@@ -5,29 +5,38 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.validation.annotation.Validated;
 import tasker.api.utils.Shell;
 
 import javax.sql.DataSource;
-import java.io.BufferedReader;
 import java.io.Console;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import static tasker.api.utils.Utils.isStringNull;
 
 @SpringBootApplication
 public class TaskerServer {
+    public record CredentialsRead(String username, String password) {}
 
+
+    /** Constants */
     public static final int SLEEP_ERROR_STATUS = -1;
     public static final int NO_CONSOLE_ERROR = -2;
 
+    /** Variables */
     @Value("${spring.datasource.url}")
     String dbUrl;
+
+    @Value("${db.username}")
+    String dbUsername;
+
+    @Value("${db.password}")
+    String dbPassword;
+
 
     public static void main(String[] args) {
         SpringApplication.run(TaskerServer.class);
     }
 
-    public static void QuitServer(int status) {
+    public static void quitServer(int status) {
         Shell.getInstance().printFine("The server is closing...");
 
         try {
@@ -40,20 +49,33 @@ public class TaskerServer {
         System.exit(status);
     }
 
-    @Bean
-    public DataSource configureDb() {
-
-        // Get db credentials
+    public CredentialsRead readCredentials() {
         Console console = System.console();
         if (console == null) {
             Shell.getInstance().printError("No console available");
-            QuitServer(NO_CONSOLE_ERROR);
+            quitServer(NO_CONSOLE_ERROR);
             return null;
         }
+
         Shell.getInstance().printLineInput("Enter Database Username: ");
         String username = console.readLine();
         Shell.getInstance().printLineInput("Enter Database Username: ");
         String password = String.valueOf(console.readPassword());
+        return new CredentialsRead(username, password);
+    }
+
+    @Bean
+    public DataSource configureDb() {
+        boolean noCredentialsOnSecret = isStringNull(dbUsername) || isStringNull(dbPassword);
+        String username = dbUsername;
+        String password = dbPassword;
+
+        // Prompt credentials if not found on secret file
+        if (noCredentialsOnSecret) {
+            CredentialsRead result = readCredentials();
+            username = result.username;
+            password = result.password;
+        }
 
         return DataSourceBuilder.create()
                 .url(dbUrl)

@@ -24,6 +24,7 @@ html, body, #root {
 :root {
   --title-text-color: #cfd8e4;
   --error-text-color: #fd3636;
+  --data-text-color: #caa269;
 }
 
 /***************
@@ -36,27 +37,6 @@ html, body, #root {
   text-align: center;
   display: flex;
   flex-direction: column;
-}
-.App-topbar {
-  position: relative;
-  flex-shrink: 0;
-  color: var(--title-text-color);
-  background-color: #23232c;
-  height: 3.5rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 165%;
-  text-shadow: rgba(0, 0, 0, 0.507) 0 0 1vh;
-  box-shadow: 1vh 0px 2vh rgba(0, 0, 0, 0.678);
-  z-index: 1;
-  padding-left: 2rem;
-  padding-right: 4rem;
-  padding-bottom: 0.25rem;
-  font-weight: 900;
-  border-bottom: 3px solid #1a1a22;
-  
 }
 .App-body {
   flex: 1;
@@ -174,5 +154,5 @@ html, body, #root {
   border-radius: 1.75rem;
   padding-left: 2rem;
   padding-right: 2rem;
-  color: #caa269;
+  color: var(--data-text-color);
 }

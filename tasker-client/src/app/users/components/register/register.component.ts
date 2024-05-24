@@ -10,7 +10,7 @@ import { NO_CONNECTION_TO_SERVER_MSG, PostRequest } from '../../../core/Networki
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  @Input() errorMessage: string; 
+  public errorMessage: string; 
   private email: string;
   private username: string;
   private password: string;
