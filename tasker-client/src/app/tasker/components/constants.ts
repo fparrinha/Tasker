@@ -4,8 +4,8 @@
  * Global constants file for the Tasker section
  */
 
-
-const EmptyTaskDescription = 'Empty...';
+const EmptyID: string = "-1";
+const EmptyTaskDescription: string = 'Empty...';
 const TaskInputColor = {
     FOCUSED: 'whitesmoke',
     IDLE: '#caa269'
@@ -21,4 +21,4 @@ const Priority = {
     LOW: 0
 };
 
-export { EmptyTaskDescription, TaskInputColor, ButtonColors, Priority }
+export { EmptyID, EmptyTaskDescription, TaskInputColor, ButtonColors, Priority }

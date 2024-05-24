@@ -6,6 +6,7 @@ import { faPaperPlane, faTrash, faRotateLeft, IconDefinition } from '@fortawesom
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ButtonColors, TaskInputColor } from '../constants';
 import { AutosizeModule } from 'ngx-autosize';
+import { TaskModel } from '../../models/TaskModel';
 
 @Component({
   selector: 'app-task',
@@ -18,8 +19,8 @@ export class TaskComponent implements OnInit {
   @Input() id: string;
   @Input() description: string;
   @Input() priority: number;
-  @Output() onUpdate: EventEmitter<{id: string, description: string, priority: number}>;
-  @Output() onDelete: EventEmitter<{id: string}>;
+  @Output() onUpdate: EventEmitter<TaskModel>;
+  @Output() onDelete: EventEmitter<TaskModel>;
   @ViewChild('descriptionEl') descriptionEl!:  ElementRef;
   public style: { color: string };
   public colors: { updateButton: string, resetButton: string, deleteButton: string };
@@ -37,8 +38,8 @@ export class TaskComponent implements OnInit {
       this.id = "";
       this.description = "";
       this.priority = -1;
-      this.onUpdate = new EventEmitter<{id: string, description: string, priority: number}>();
-      this.onDelete = new EventEmitter<{id: string}>();
+      this.onUpdate = new EventEmitter<TaskModel>();
+      this.onDelete = new EventEmitter<TaskModel>();
       this.isEditing = false;
       this.isFocused = false;
       this.currentDescription = "";
@@ -100,10 +101,10 @@ export class TaskComponent implements OnInit {
     this.updateEditState();
   }
   onSubmitDelete(): void {
-    this.onDelete.emit({id: this.id});
+    this.onDelete.emit(new TaskModel(this.id));
   }
   onSubmitUpdate(): void {
-    this.onUpdate.emit({id: this.id, description: this.currentDescription, priority: this.currentPriority});
+    this.onUpdate.emit(new TaskModel(this.id, this.currentDescription, this.currentPriority));
     this.isEditing = false;
   }
   onSubmitReset(): void {

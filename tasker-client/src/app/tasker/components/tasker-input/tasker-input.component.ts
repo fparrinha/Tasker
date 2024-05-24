@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { IconDefinition, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ButtonColors, Priority, TaskInputColor } from '../constants';
+import { TaskModel, TaskModelBuilder } from '../../models/TaskModel';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { ButtonColors, Priority, TaskInputColor } from '../constants';
 export class TaskerInputComponent {
   @Input() description: string;
   @Input() priority: number;
-  @Output() onSubmit: EventEmitter<{description: string, priority: number}>;
+  @Output() onSubmit: EventEmitter<TaskModel>;
   @ViewChild('input') inputComponent!: ElementRef<HTMLInputElement>;
   @ViewChild('prioritySelector') priorityComponent!: PrioritySelectorComponent;
 
@@ -33,7 +34,7 @@ export class TaskerInputComponent {
   constructor() {
     this.description = "";
     this.priority = Priority.LOW;
-    this.onSubmit = new EventEmitter<{description: string, priority: number}>(); 
+    this.onSubmit = new EventEmitter<TaskModel>(); 
   }
 
   onInput(event: any) {
@@ -52,7 +53,12 @@ export class TaskerInputComponent {
   // Events
 
   onSubmitAddTask(event: any): void {
-    this.onSubmit.emit({description: this.description, priority: this.priority});
+    const model: TaskModel = new TaskModelBuilder()
+                    .withDescription(this.description)
+                    .withPriority(this.priority)
+                    .build();
+
+    this.onSubmit.emit(model);
     this.resetState();
   }
 }

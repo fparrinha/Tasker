@@ -3,8 +3,7 @@ import { TaskerInputComponent } from '../tasker-input/tasker-input.component';
 import { TaskComponent } from '../task/task.component';
 import { CommonModule } from '@angular/common';
 import { DeleteRequest, GetRequest, NO_CONNECTION_TO_SERVER_MSG, PostRequest, PutRequest } from '../../../core/Networking';
-import { isStringEmpty } from '../../../core/Utils';
-import { EmptyTaskDescription } from '../constants';
+import { TaskModel } from '../../models/TaskModel';
 
 @Component({
   selector: 'app-tasker',
@@ -26,7 +25,10 @@ export class TaskerComponent implements OnInit {
     this.onGetTasks();
   }
 
-  /** Events */
+  
+  /********** 
+   * EVENTS *
+   **********/
 
   async onGetTasks(): Promise<void>  {
     try {
@@ -44,11 +46,11 @@ export class TaskerComponent implements OnInit {
     }
   }
   
-  async onAddTask (description: string, priority: number): Promise<void>  {
+  async onAddTask (model: TaskModel): Promise<void>  {
     try {
       const request = await PostRequest("tasker/add", {
-          description: isStringEmpty(description) ? EmptyTaskDescription : description,
-          priority: priority
+          description: model.getDescription(),
+          priority: model.getPriority()
       });
       const data = await request.json();
 
@@ -63,9 +65,9 @@ export class TaskerComponent implements OnInit {
     }
   }
 
-  async onDeleteTask(id: string): Promise<void>  {
+  async onDeleteTask(model: TaskModel): Promise<void>  {
     try {
-      const request = await DeleteRequest(`tasker/delete?id=${id}`);
+      const request = await DeleteRequest(`tasker/delete?id=${model.getId()}`);
       const data = await request.json();
 
       if (!request.ok) {
@@ -79,12 +81,12 @@ export class TaskerComponent implements OnInit {
     }
   }
 
-  async onUpdateTask(id: string, description: string, priority: number): Promise<void> {
+  async onUpdateTask(model: TaskModel): Promise<void> {
     try {
       const request = await PutRequest(`tasker/update`, {
-          id: id,
-          description: description,
-          priority: priority
+          id: model.getId(),
+          description:  model.getDescription(),
+          priority:  model.getPriority()
       });
       const data = await request.json();
 

@@ -1,6 +1,6 @@
 <div class='App-widget Tasker'>
     <app-tasker-input
-        (onSubmit)="onAddTask($event.description, $event.priority)"
+        (onSubmit)="onAddTask($event)"
         [ngStyle]="{ 'width': '100%' }">
     </app-tasker-input>
     <label class="App-error-message">{{errorMessage}}</label>
@@ -11,8 +11,8 @@
                 [id]="task.id" 
                 [description]="task.description" 
                 [priority]="task.priority" 
-                (onDelete)="onDeleteTask($event.id)"
-                (onUpdate)="onUpdateTask($event.id, $event.description, $event.priority)">
+                (onDelete)="onDeleteTask($event)"
+                (onUpdate)="onUpdateTask($event)">
             </app-task>
         </ng-container>
     </ng-container >
