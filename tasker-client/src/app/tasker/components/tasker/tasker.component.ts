@@ -4,6 +4,8 @@ import { TaskComponent } from '../task/task.component';
 import { CommonModule } from '@angular/common';
 import { DeleteRequest, GetRequest, NO_CONNECTION_TO_SERVER_MSG, PostRequest, PutRequest } from '../../../core/Networking';
 import { TaskModel } from '../../models/TaskModel';
+import { AuthService } from '../../../core/AuthService';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tasker',
@@ -16,12 +18,18 @@ export class TaskerComponent implements OnInit {
   @Input() errorMessage: string;
   public tasks : Array<{id: string, description: string, priority: number}>;
 
-  constructor() {
+  constructor(private router: Router, private auth: AuthService) {
     this.tasks = [];
     this.errorMessage = "";
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    const authenticated = await this.auth.authenticate();
+    
+    if (!authenticated) {
+      this.router.navigate(['/login']);
+    }
+
     this.onGetTasks();
   }
 

@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import tasker.api.utils.Shell;
+import tasker.api.utils.Utils;
 
 import javax.sql.DataSource;
 import java.io.Console;
 
-import static tasker.api.utils.Utils.isStringNull;
 
 @SpringBootApplication
 public class TaskerServer {
@@ -33,7 +33,7 @@ public class TaskerServer {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(TaskerServer.class);
+        SpringApplication.run(TaskerServer.class, args);
     }
 
     public static void quitServer(int status) {
@@ -66,7 +66,7 @@ public class TaskerServer {
 
     @Bean
     public DataSource configureDb() {
-        boolean noCredentialsOnSecret = isStringNull(dbUsername) || isStringNull(dbPassword);
+        boolean noCredentialsOnSecret = Utils.isStringNull(dbUsername) || Utils.isStringNull(dbPassword);
         String username = dbUsername;
         String password = dbPassword;
 

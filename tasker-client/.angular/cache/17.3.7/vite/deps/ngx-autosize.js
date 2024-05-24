@@ -17,7 +17,8 @@ import {
   ɵɵdefineNgModule,
   ɵɵdirectiveInject,
   ɵɵlistener
-} from "./chunk-R7YT5K5L.js";
+} from "./chunk-VCH6JVBI.js";
+import "./chunk-WSA2QMXP.js";
 import "./chunk-J4B6MK7R.js";
 
 // node_modules/ngx-autosize/fesm2020/ngx-autosize.mjs

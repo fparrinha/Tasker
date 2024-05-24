@@ -29,6 +29,7 @@
     color: var(--data-text-color);
     width: 100%;
     text-align: start;
+    font-size: 1.8vh;
 }
 
 .Settings-data-locked {

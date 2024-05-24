@@ -1,4 +1,4 @@
-import { EmptyID, EmptyTaskDescription, Priority } from "../components/constants";
+import { EmptyID, EmptyTaskDescription, Priority } from "../constants";
 
 export class TaskModel {
     private id: string;

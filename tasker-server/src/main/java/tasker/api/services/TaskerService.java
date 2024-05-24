@@ -9,10 +9,10 @@ import tasker.api.exceptions.TaskDoesNotExistException;
 import tasker.api.models.TaskModel;
 import tasker.api.repositories.TaskerRepository;
 import tasker.api.resources.Task;
+import tasker.api.utils.Utils;
 
 import java.util.*;
 
-import static tasker.api.utils.Utils.isStringNull;
 
 @Service
 public class TaskerService {
@@ -29,7 +29,7 @@ public class TaskerService {
      */
     @Transactional
     public List<Task> add(String description, Integer priority) throws InvalidRequestDataException {
-        if (isStringNull(description) || priority == null) {
+        if (Utils.isStringNull(description) || priority == null) {
             throw new InvalidRequestDataException("Add Task");
         }
 

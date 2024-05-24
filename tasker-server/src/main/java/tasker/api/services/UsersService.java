@@ -10,10 +10,9 @@ import tasker.api.exceptions.UserNotAuthorizedException;
 import tasker.api.models.UserModel;
 import tasker.api.repositories.UsersRepository;
 import tasker.api.resources.User;
+import tasker.api.utils.Utils;
 
 import java.util.Optional;
-
-import static tasker.api.utils.Utils.isStringNull;
 
 @Service
 public class UsersService {
@@ -22,7 +21,7 @@ public class UsersService {
     private UsersRepository usersRepository;
 
     @Transactional
-    public User add(UserModel model) throws InvalidRequestDataException, UserAlreadyExistsException {
+    public void add(UserModel model) throws InvalidRequestDataException, UserAlreadyExistsException {
         if (model.isDataCorrupt()) {
             throw new InvalidRequestDataException("Create User");
         }
@@ -40,22 +39,22 @@ public class UsersService {
         user.setPassword(model.password());
         user.setFirstName(model.firstName());
         user.setLastName(model.lastName());
-        return usersRepository.save(user);
+        usersRepository.save(user);
     }
 
     /**
      * Updates the user's info except its password and username, since these require more security
      * <p>
-     *     Username and password are still required to authenticate the user before updating its values
+     * Username and password are still required to authenticate the user before updating its values
      * </p>
+     *
      * @param model the user's data model
-     * @return updated user
      * @throws InvalidRequestDataException data is corrupt
-     * @throws UserDoesNotExistException user already exists in the system
-     * @throws UserNotAuthorizedException user does not have the authorization required to update
+     * @throws UserDoesNotExistException   user already exists in the system
+     * @throws UserNotAuthorizedException  user does not have the authorization required to update
      */
     @Transactional
-    public User update(UserModel model) throws InvalidRequestDataException, UserDoesNotExistException, UserNotAuthorizedException {
+    public void update(UserModel model) throws InvalidRequestDataException, UserDoesNotExistException, UserNotAuthorizedException {
         if (model.isDataCorrupt()) {
             throw new InvalidRequestDataException("Update User");
         }
@@ -77,12 +76,11 @@ public class UsersService {
         user.setFirstName(user.getFirstName());
         user.setLastName(user.getLastName());
         usersRepository.save(user);
-        return user;
     }
 
     @Transactional
     public User delete(String username, String password) throws InvalidRequestDataException, UserDoesNotExistException, UserNotAuthorizedException {
-        if (isStringNull(username) || isStringNull(password)) {
+        if (Utils.isStringNull(username) || Utils.isStringNull(password)) {
             throw new InvalidRequestDataException("User Authentication");
         }
 
@@ -103,6 +101,60 @@ public class UsersService {
         return user;
     }
 
+    /**
+     * Retrieves user info given its username and password
+     * @param username
+     * @param password
+     * @return the given user
+     * @throws InvalidRequestDataException the request data is corrupt
+     * @throws UserDoesNotExistException the user does not exist in the system
+     * @throws UserNotAuthorizedException the user is not authorized for the procedure
+     */
+    public User get(String username, String password) throws InvalidRequestDataException, UserDoesNotExistException, UserNotAuthorizedException {
+        if (Utils.isStringNull(username) || Utils.isStringNull(password)) {
+            throw new InvalidRequestDataException("User Authentication");
+        }
+
+        Optional<User> query = usersRepository.findById(username);
+        if (query.isEmpty()) {
+            throw new UserDoesNotExistException();
+        }
+
+        // Authenticate user
+        if (!authenticateUser(username, password)) {
+            throw new UserNotAuthorizedException("Wrong password");
+        }
+
+        return query.get();
+    }
+
+    /**
+     * Retrieves user info given its username and auth token. The secret used must be provided as well
+     * @param username
+     * @param token
+     * @param tokenSecret the secret used during the token creation
+     * @return the given user
+     * @throws InvalidRequestDataException the request data is corrupt
+     * @throws UserDoesNotExistException the user does not exist in the system
+     * @throws UserNotAuthorizedException the user is not authorized for the procedure
+     */
+    public User get(String username, String token, String tokenSecret) throws InvalidRequestDataException, UserDoesNotExistException, UserNotAuthorizedException {
+        if (Utils.isStringNull(username) || Utils.isStringNull(token)) {
+            throw new InvalidRequestDataException("User Authentication");
+        }
+
+        Optional<User> query = usersRepository.findById(username);
+        if (query.isEmpty()) {
+            throw new UserDoesNotExistException();
+        }
+
+        // Authenticate user
+        if (!Utils.validateAuthToken(token, tokenSecret, username)) {
+            throw new UserNotAuthorizedException("Wrong password");
+        }
+
+        return query.get();
+    }
 
     /**
      * Validates the user password
@@ -111,7 +163,7 @@ public class UsersService {
      * @return password is correct or not for the given user
      */
     public boolean authenticateUser(String username, String password) throws InvalidRequestDataException, UserDoesNotExistException {
-        if (isStringNull(username) || isStringNull(password)) {
+        if (Utils.isStringNull(username) || Utils.isStringNull(password)) {
             throw new InvalidRequestDataException("User Authentication");
         }
 
@@ -131,7 +183,7 @@ public class UsersService {
      * @return does user exist or not
      */
     public boolean userExists(String username) throws InvalidRequestDataException {
-        if (isStringNull(username)) {
+        if (Utils.isStringNull(username)) {
             throw new InvalidRequestDataException("User exists");
         }
 

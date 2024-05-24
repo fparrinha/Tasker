@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NO_CONNECTION_TO_SERVER_MSG, PostRequest } from '../../../core/Networking';
+import { AuthService } from '../../../core/AuthService';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +18,7 @@ export class RegisterComponent {
   private firstName: string;
   private lastName: string;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private auth: AuthService) {
     this.errorMessage = "";
     this.email = "";
     this.username = "";
@@ -59,6 +60,7 @@ export class RegisterComponent {
         return;  
       }
 
+      this.auth.store(data.token, this.username);
       this.router.navigate(['/tasker']);
     } catch (error) {
       this.errorMessage = NO_CONNECTION_TO_SERVER_MSG;
