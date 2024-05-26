@@ -24,12 +24,6 @@ export class TaskerComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const authenticated = await this.auth.authenticate();
-    
-    if (!authenticated) {
-      this.router.navigate(['/login']);
-    }
-
     this.onGetTasks();
   }
 

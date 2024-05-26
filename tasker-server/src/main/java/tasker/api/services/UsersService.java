@@ -3,10 +3,7 @@ package tasker.api.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tasker.api.exceptions.InvalidRequestDataException;
-import tasker.api.exceptions.UserAlreadyExistsException;
-import tasker.api.exceptions.UserDoesNotExistException;
-import tasker.api.exceptions.UserNotAuthorizedException;
+import tasker.api.exceptions.*;
 import tasker.api.models.UserModel;
 import tasker.api.repositories.UsersRepository;
 import tasker.api.resources.User;
@@ -17,13 +14,20 @@ import java.util.Optional;
 @Service
 public class UsersService {
 
+    public static final int MIN_PASSWORD_CHARS = 6;
+
+
     @Autowired
     private UsersRepository usersRepository;
 
     @Transactional
-    public void add(UserModel model) throws InvalidRequestDataException, UserAlreadyExistsException {
+    public void add(UserModel model) throws InvalidRequestDataException, UserAlreadyExistsException, NewPasswordIsToShortException {
         if (model.isDataCorrupt()) {
             throw new InvalidRequestDataException("Create User");
+        }
+
+        if (model.password().length() < MIN_PASSWORD_CHARS) {
+            throw new NewPasswordIsToShortException(MIN_PASSWORD_CHARS);
         }
 
         // Check user existence

@@ -25,7 +25,7 @@ export class SettingsComponent {
     this.lastName = FetchingUserDataMessage;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.requestUserData();
   }
 

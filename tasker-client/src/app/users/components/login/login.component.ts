@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NO_CONNECTION_TO_SERVER_MSG, PostRequest } from '../../../core/Networking';
 import { AuthService } from '../../../core/AuthService';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../core/AuthService';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   public errorMessage: string;
   private username: string;
   private password: string;
@@ -19,6 +19,10 @@ export class LoginComponent {
     this.username = "";
     this.password = "";
     this.errorMessage = "";
+  }
+
+  ngOnInit(): void {
+    this.auth.clear();
   }
 
   onUsernameChange(event: any): void {

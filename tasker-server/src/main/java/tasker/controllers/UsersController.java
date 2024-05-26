@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tasker.api.exceptions.InvalidRequestDataException;
-import tasker.api.exceptions.UserAlreadyExistsException;
-import tasker.api.exceptions.UserDoesNotExistException;
-import tasker.api.exceptions.UserNotAuthorizedException;
+import tasker.api.exceptions.*;
 import tasker.api.models.UserModel;
 import tasker.api.requests.users.LoginRequest;
 import tasker.api.requests.users.RegisterRequest;
@@ -87,6 +84,10 @@ public class UsersController {
             String errorMessage = e.getMessage();
             Shell.getInstance().printError(errorMessage);
             return new ResponseEntity<>(new ApiResponse(errorMessage), HttpStatus.CONFLICT);
+        } catch (NewPasswordIsToShortException e) {
+            String errorMessage = e.getMessage();
+            Shell.getInstance().printError(errorMessage);
+            return new ResponseEntity<>(new ApiResponse(errorMessage), HttpStatus.BAD_REQUEST);
         }
     }
 
